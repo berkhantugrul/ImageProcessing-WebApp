@@ -4,7 +4,7 @@ from pathlib import Path
 from streamlit_image_comparison import image_comparison
 from image_processes import *
 from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+from io import BytesIO
 
 
 # Sayfa basligi
@@ -232,9 +232,7 @@ with col2:
             "Threshold": 5,
             "Blurring": 6,
             "Sharpening": 5,
-            "EdgeDetection": 8,
-            "Blurring": 6
-        }
+            "EdgeDetection": 8        }
 
         # Alternatif: farklı sıklıklar
         # word_freq = {"Python": 10, "OpenCV": 8, "Streamlit": 7, "Histogram": 5, "Veri": 3}
@@ -273,6 +271,7 @@ with col2:
             ["Saturation", "Histogram Equalization", "Gamma Correction"]
         )
         
+        
         # Display the selected tool
         st.markdown(f"<h3 style='margin-top: 3vh;'>{tool}</h3>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 18px;'>Upload an image to apply the selected tool.</p>", unsafe_allow_html=True)
@@ -289,7 +288,7 @@ with col2:
                 # Görseli açalım
                 image = Image.open(uploaded_file)
                 
-                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                 # Görseli Streamlit'te gösterelim
         
 
@@ -315,7 +314,7 @@ with col2:
                         # Display the enhanced image
                         # st.image(enhanced_image, caption="Saturation Adjusted Image", use_container_width=True)
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -324,6 +323,22 @@ with col2:
 
                         # Update the file name with the custom input
                         file_name = f"{custom_file_name}.{file_type}"
+
+                        # Save the enhanced image to a BytesIO object
+                        buffer = BytesIO()
+                        enhanced_image.save(buffer, format=file_type.upper())
+                        buffer.seek(0)
+
+                        # Create a download button
+                        st.download_button(
+                            label="Download Edited Image",
+                            data=buffer,
+                            file_name=file_name,
+                            mime=f"image/{file_type}",
+                            key="download_button",
+                            help="Click to download the edited image",
+                            use_container_width=True  # Adjust the button width to fit the container
+                        )
 
                         
                         
@@ -337,7 +352,7 @@ with col2:
                 # Görseli açalım
                 image = Image.open(uploaded_file)
                 
-                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                 # Görseli Streamlit'te gösterelim
         
 
@@ -360,7 +375,7 @@ with col2:
                         enhanced_image = HistogramEqualization(image)
 
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -369,6 +384,22 @@ with col2:
 
                         # Update the file name with the custom input
                         file_name = f"{custom_file_name}.{file_type}"
+
+                        # Save the enhanced image to a BytesIO object
+                        buffer = BytesIO()
+                        enhanced_image.save(buffer, format=file_type.upper())
+                        buffer.seek(0)
+
+                        # Create a download button
+                        st.download_button(
+                            label="Download Edited Image",
+                            data=buffer,
+                            file_name=file_name,
+                            mime=f"image/{file_type}",
+                            key="download_button",
+                            help="Click to download the edited image",
+                            use_container_width=True  # Adjust the button width to fit the container
+                        )
 
 
 
@@ -383,7 +414,7 @@ with col2:
                 # Görseli açalım
                 image = Image.open(uploaded_file)
                 
-                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                 # Görseli Streamlit'te gösterelim
                 # Add a slider for gamma value
                 gamma_value = st.slider("Select Gamma Value", min_value=0.0, max_value=2.0, value=1.0, step=0.1)
@@ -407,7 +438,7 @@ with col2:
                         enhanced_image = GammaCorrection(image, gamma_value)
 
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                        image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -416,6 +447,22 @@ with col2:
 
                         # Update the file name with the custom input
                         file_name = f"{custom_file_name}.{file_type}"
+
+                        # Save the enhanced image to a BytesIO object
+                        buffer = BytesIO()
+                        enhanced_image.save(buffer, format=file_type.upper())
+                        buffer.seek(0)
+
+                        # Create a download button
+                        st.download_button(
+                            label="Download Edited Image",
+                            data=buffer,
+                            file_name=file_name,
+                            mime=f"image/{file_type}",
+                            key="download_button",
+                            help="Click to download the edited image",
+                            use_container_width=True  # Adjust the button width to fit the container
+                        )
 
 
     ############################### BLURRING & SHARPENING #############################
@@ -450,7 +497,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
 
                     # Add a input box for kernel dimensions
@@ -478,10 +525,30 @@ with col2:
                             enhanced_image = GaussianBlur(image, kernel_size, sigma)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                        
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
-                            
-                            
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Median Blurring":
@@ -493,7 +560,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
 
                     # Add a input box for kernel dimensions
@@ -519,12 +586,32 @@ with col2:
                             enhanced_image = MedianBlur(image, kernel_size)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
-
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
                             
-                            
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
         
+
             case "Average Blurring":
                 # File uploader for image uploading
                 uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"])
@@ -534,7 +621,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
 
                     # Add a input box for kernel dimensions
@@ -560,11 +647,31 @@ with col2:
                             enhanced_image = AverageBlur(image, kernel_size)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
 
-                            
-                            
+                        
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
                 
             case "Bilateral Filtering":
                 # File uploader for image uploading
@@ -577,7 +684,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
                     
@@ -605,8 +712,30 @@ with col2:
                             enhanced_image = BilateralFiltering(image, int(diameter), int(sigmaColor), int(sigmaSpace))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
 
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
                             
     ################################## EDGE & FEATURE DETECTION #############################
 
@@ -641,7 +770,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
                     
@@ -668,7 +797,30 @@ with col2:
                             enhanced_image = SobelOperator(image, int(dx), int(dy), int(ksize))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)                     
+                        
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Laplacian of Gaussian (LoG)":
@@ -680,7 +832,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -707,7 +859,30 @@ with col2:
                             enhanced_image = LaplacianOfGaussian(image, ksize, sigma)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                        
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Prewitt Operator":
@@ -719,7 +894,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -745,8 +920,30 @@ with col2:
                             enhanced_image = PrewittOperator(image, int(dx), int(dy))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)                           
+                            
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Roberts Cross Operator":
@@ -758,7 +955,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -784,7 +981,30 @@ with col2:
                             enhanced_image = RobertsCrossOperator(image)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                       
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Scharr Operator":
@@ -796,7 +1016,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -822,8 +1042,30 @@ with col2:
                             enhanced_image = ScharrOperator(image, int(dx), int(dy))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+ 
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
             case "Canny Edge Detection":
                 # File uploader for image uploading
@@ -834,7 +1076,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -860,8 +1102,32 @@ with col2:
                             enhanced_image = CannyEdgeDetection(image, int(low_threshold), int(high_threshold))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                    
+                            st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
+                            
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
 
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
     ################################### THRESHOLDING & SLICING #############################
@@ -896,7 +1162,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -921,7 +1187,30 @@ with col2:
                             enhanced_image = BinaryThresholding(image, int(threshold_value))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Adaptive Thresholding":
@@ -933,7 +1222,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -962,9 +1251,32 @@ with col2:
                             placeholder.empty()  # Clear the placeholder
 
                             enhanced_image = AdaptiveThresholding(image, int(max_value), adaptive_method, threshold_type, int(block_size), int(c))
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
 
-                            st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
+                            st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")                            
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Gray Level Slicing":
@@ -976,7 +1288,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -1001,9 +1313,33 @@ with col2:
                             placeholder.empty()  # Clear the placeholder
 
                             enhanced_image = GrayLevelSlicing(image, min_gray, max_gray, highlight_value)
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+
+
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
             case "Bit Plane Slicing":
@@ -1015,7 +1351,7 @@ with col2:
                     # Görseli açalım
                     image = Image.open(uploaded_file)
                     
-                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1170)
+                    placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
                     # Görseli Streamlit'te gösterelim
                     # Add a slider for filter values
 
@@ -1038,9 +1374,33 @@ with col2:
                             placeholder.empty()  # Clear the placeholder
 
                             enhanced_image = BitPlaneSlicing(image, int(bit_plane))
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1170)
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+
+
+                            # Dosyayı indirilebilir hale getirme
+                            # Input field for custom file name
+                            custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                            # Update the file name with the custom input
+                            file_name = f"{custom_file_name}.{file_type}"
+
+                            # Save the enhanced image to a BytesIO object
+                            buffer = BytesIO()
+                            enhanced_image.save(buffer, format=file_type.upper())
+                            buffer.seek(0)
+
+                            # Create a download button
+                            st.download_button(
+                                label="Download Edited Image",
+                                data=buffer,
+                                file_name=file_name,
+                                mime=f"image/{file_type}",
+                                key="download_button",
+                                help="Click to download the edited image",
+                                use_container_width=True  # Adjust the button width to fit the container
+                            )
 
 
 
@@ -1070,18 +1430,342 @@ with col2:
             unsafe_allow_html=True
         )
 
-        
+
+############################# COL3 - DIP TECHNIQUES' INFORMATION PART #############################
+
 with col3:
 
     if st.session_state.page != 'Dashboard':
         # Add a gray box with "Technique Info" header and a thin underline
-        st.markdown("""
-            <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px; height: 100vh;'>
-                <h3 style='margin: 0; color: #FFF;'>Technique Info</h3>
-                <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
-                <p style='font-size: 16px; color: #FFF;'>Detailed information about the selected technique will be displayed here.</p>
-            </div>
-        """, unsafe_allow_html=True)
+
+        if st.session_state.page == 'Contrast':
+            
+            if tool == "Saturation":
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Saturation</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>Saturation controls the intensity and vividness of colors in an image. 
+                        It determines how "pure" or "washed out" a color appears.</p>
+                        <p style='font-size: 16px; color: #FFF;'>Saturation Value:
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>= 0 → removes all color, turning the image into grayscale.</li>
+                            <li>= 1 → keeps the original saturation of the image.</li>
+                            <li>&gt; 1 → enhances color intensity, making the image appear more lively and dramatic.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Adjusting saturation is commonly used to correct dull images, apply creative effects, or match a specific visual style. 
+                        It's a powerful tool in both photography and digital image processing.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            elif tool == "Histogram Equalization":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Histogram Equalization</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Histogram Equalization is a technique used to improve the contrast of an image by redistributing the intensity values. 
+                            It spreads out the most frequent intensity values, enhancing the global contrast.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Ideal for low contrast images.</li>
+                            <li>Enhances details in both dark and bright regions.</li>
+                            <li>Works well in grayscale images.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Commonly used in medical imaging, satellite imagery, and photography to improve visibility of features.</p>
+                    </div>
+                """, unsafe_allow_html=True)
 
 
-    # ilgili kısım eklenecek
+            elif tool == "Gamma Correction":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Gamma Correction</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Gamma Correction adjusts the brightness of an image by applying a nonlinear transformation to pixel values.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Gamma &gt; 1 → Makes the image brighter.</li>
+                            <li>Gamma = 1 → No change to brightness.</li>
+                            <li>Gamma &lt; 1 → Makes the image darker.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Useful for correcting lighting issues, improving visibility, or preparing images for display devices.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+        elif st.session_state.page == "Blurring":
+
+            if tool == "Gaussian Blurring":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Gaussian Blurring</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Gaussian Blurring is a smoothing technique that uses a Gaussian function to reduce image noise and detail. 
+                            It is widely used before edge detection and other preprocessing steps.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Applies a weighted average where nearby pixels influence the center more.</li>
+                            <li>Preserves general structures while removing fine noise.</li>
+                            <li>Controlled by kernel size and standard deviation (sigma).</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Commonly used in object detection, segmentation, and background blurring.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            
+            elif tool == "Median Blurring":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Median Blurring</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Median Blurring replaces each pixel's value with the median of neighboring pixels. 
+                            It is particularly effective for removing "salt and pepper" noise.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Preserves edges better than other blurring techniques.</li>
+                            <li>Ideal for images with high-contrast noise.</li>
+                            <li>Kernel size must be an odd number (e.g., 3, 5, 7).</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Widely used in preprocessing steps for cleaner edge and object detection.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Average Blurring":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Average Blurring</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Average Blurring (or mean filtering) smoothens an image by replacing each pixel with the average of its neighboring pixels.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Reduces noise and detail uniformly.</li>
+                            <li>Can blur edges and textures.</li>
+                            <li>Simple and fast technique using a normalized box filter.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Useful when performance matters and edge precision is less critical.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Bilateral Filtering":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Bilateral Filtering</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Bilateral Filtering smoothens images while preserving edges. It considers both spatial distance and pixel intensity difference.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Preserves sharp edges while reducing noise.</li>
+                            <li>Controlled by three parameters: diameter (d), sigmaColor, and sigmaSpace.</li>
+                            <li>Higher sigmaColor → more colors are mixed; Higher sigmaSpace → larger areas are blurred.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Ideal for edge-preserving denoising and cartoon-like effects.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+
+        elif st.session_state.page == "Edge":
+            
+            if tool == "SOBEL Operator":
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>SOBEL Operator</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            The Sobel Operator detects edges by calculating the gradient of image intensity in horizontal and vertical directions.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Highlights edges with strong intensity changes.</li>
+                            <li>Combines smoothing and differentiation.</li>
+                            <li>Commonly applied in both x and y directions.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Widely used for object boundary detection and edge-based segmentation.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Laplacian of Gaussian (LoG)":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Laplacian of Gaussian (LoG)</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Laplacian of Gaussian combines Gaussian smoothing and Laplacian edge detection. It helps detect edges while reducing noise.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>First applies Gaussian blur to reduce noise.</li>
+                            <li>Then uses Laplacian operator to detect regions with rapid intensity change.</li>
+                            <li>Effective in highlighting fine details and edges.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Ideal for edge detection in noisy images and medical/scientific analysis.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Prewitt Operator":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Prewitt Operator</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            The Prewitt Operator detects edges by computing the gradient of the image using a simpler kernel than Sobel.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Focuses on horizontal and vertical intensity changes.</li>
+                            <li>Less sensitive to noise than Laplacian-based methods.</li>
+                            <li>Simple and computationally efficient.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Used in basic edge detection tasks where performance is crucial.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Roberts Cross Operator":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Roberts Cross Operator</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            The Roberts Cross Operator is a simple method for edge detection using a diagonal gradient approximation.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Uses 2×2 kernels for diagonal edge detection.</li>
+                            <li>Effective for high-speed processing with minimal computation.</li>
+                            <li>Sensitive to noise due to small kernel size.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Often used in real-time applications or where memory is limited.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Scharr Operator":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Scharr Operator</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            The Scharr Operator is an improved version of Sobel, designed for better rotational symmetry and edge accuracy.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Emphasizes gradient accuracy, especially for diagonal edges.</li>
+                            <li>Uses more precise kernel weights than Sobel.</li>
+                            <li>Suitable for high-quality edge detection.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Common in applications requiring accurate and detailed edge maps.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Canny Edge Detection":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Canny Edge Detection</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Canny Edge Detection is a multi-stage algorithm for detecting sharp edges in images with high accuracy.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Applies Gaussian blur to reduce noise.</li>
+                            <li>Finds intensity gradients and suppresses non-maximum edges.</li>
+                            <li>Uses double thresholding and edge tracking for precision.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Widely used in computer vision and object detection tasks due to its robustness and accuracy.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+        elif st.session_state.page == "Thresholding":
+
+            if tool == "Binary Thresholding":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Binary Thresholding</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Binary Thresholding converts a grayscale image into black and white based on a fixed threshold value.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Pixels above the threshold → set to max value (usually 255).</li>
+                            <li>Pixels below the threshold → set to 0.</li>
+                            <li>Fast and simple segmentation method.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Commonly used for separating foreground from background in document processing or shape analysis.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Adaptive Thresholding":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Binary Thresholding</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Binary Thresholding converts a grayscale image into black and white based on a fixed threshold value.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Pixels above the threshold → set to max value (usually 255).</li>
+                            <li>Pixels below the threshold → set to 0.</li>
+                            <li>Fast and simple segmentation method.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Commonly used for separating foreground from background in document processing or shape analysis.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Gray Level Slicing":
+                
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Gray Level Slicing</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Gray Level Slicing enhances specific ranges of pixel intensities while suppressing others.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Highlights certain intensity levels to emphasize features.</li>
+                            <li>Can be applied with or without preserving the rest of the image.</li>
+                            <li>Useful for isolating regions of interest (e.g., bones in X-rays).</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Great for visualizing specific structures in scientific or medical imagery.</p>
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            elif tool == "Bit Plane Slicing":
+
+                st.markdown("""
+                    <div style='background-color: #e01410; padding: 20px; border-radius: 10px; margin-top: 20px;  height: 80vh;'>
+                        <h3 style='margin: 0; color: #FFF;'>Bit Plane Slicing</h3>
+                        <hr style='border: none; border-top: 1px solid #FFF; margin: 10px 0;'>
+                        <p style='font-size: 16px; color: #FFF;'>
+                            Bit Plane Slicing separates an image into its individual bit planes, highlighting the contribution of each bit to the image.
+                        </p>
+                        <ul style='font-size: 16px; color: #FFF;'>
+                            <li>Each 8-bit grayscale image contains 8 bit planes (from bit 0 to bit 7).</li>
+                            <li>Higher-order bits (e.g., 6th, 7th) contribute more to the visual content.</li>
+                            <li>Lower-order bits often contain finer details or noise.</li>
+                        </ul>
+                        <p style='font-size: 16px; color: #FFF;'>Useful in image compression, watermarking, and feature extraction.</p>
+                    </div>
+                """, unsafe_allow_html=True)
