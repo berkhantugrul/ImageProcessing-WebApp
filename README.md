@@ -35,7 +35,6 @@ This project provides an interactive **Python + Streamlit** dashboard for visual
 
 - `opencv-python`
 - `numpy`
-- `matplotlib`
 - `wordcloud`
 - `PIL`
 - `streamlit`
