@@ -451,3 +451,26 @@ def BitPlaneSlicing(image, bit_plane):
     # Convert back to PIL Image
     result_image = Image.fromarray(bit_plane_image)
     return result_image
+
+
+
+
+TECHNIQUES = {
+    "Histogram Equalization": HistogramEqualization,
+    "Gaussian Blurring": GaussianBlur,
+    "Canny Edge Detection": CannyEdgeDetection,
+    "Adaptive Thresholding": AdaptiveThresholding,
+    "Saturation": Saturation,
+    "Gamma Correction": GammaCorrection,
+    "Bilateral Filtering": BilateralFiltering,
+    "Median Filtering": MedianBlur,
+    "Average Filtering": AverageBlur,
+    "Sobel Operator": SobelOperator,
+    "Prewitt Operator": PrewittOperator,
+    "Roberts Cross Operator": RobertsCrossOperator,
+    "Scharr Operator": ScharrOperator,
+    "Laplacian of Gaussian": LaplacianOfGaussian,
+    "Bit Plane Slicing": BitPlaneSlicing,
+    "Gray Level Slicing": GrayLevelSlicing,
+    "Binary Thresholding": BinaryThresholding
+}

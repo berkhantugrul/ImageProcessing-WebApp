@@ -4,7 +4,11 @@ from pathlib import Path
 from streamlit_image_comparison import image_comparison
 from image_processes import *
 from wordcloud import WordCloud
+import pandas as pd
 from io import BytesIO
+from db import *
+
+init_db()
 
 
 # Sayfa basligi
@@ -159,10 +163,11 @@ if st.sidebar.button('Edge & Feature Detection'):
 if st.sidebar.button('Thresholding & Slicing'):
     st.session_state.page = 'Thresholding'
 
+if st.sidebar.button("Database"):
+    st.session_state.page = "Database"
+
 if st.sidebar.button('About'):
     st.session_state.page = 'About'
-
-
 
 # Layout
 col2, col3 = st.columns([6, 2.3])
@@ -181,17 +186,19 @@ with col2:
             unsafe_allow_html=True
         )
 
+        total, unique, per_technique = get_statistics()
+
         # Display two cards side by side
-        st.markdown("""
+        st.markdown(f"""
             <div style='display: flex; justify-content: flex-start; gap: 20px; margin-top: 40px; margin-left: 0px; width: 120%;'>
             <div style='display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; width: 45vh; height: 25vh; border-radius: 10px; padding: 20px;'>
             <div style='width: 80px; height: 8vh; border: 2px solid transparent; border-radius: 50%; display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; margin-right: 50px; margin-left: 10px;'>
-            <img src='https://cdn-icons-png.freepik.com/128/9752/9752076.png' alt='Icon' style='width: 60px; height: 60px;' />
+            <img src='https://cdn-icons-png.freepik.com/128/1159/1159633.png' alt='Icon' style='width: 60px; height: 60px;' />
             </div>
             <div style='text-align: left;'>
             <h4 style='margin-top: 15px; color: #000000'>Total:</h4>
-            <h3 style='margin-top: 5px; color: #dd140e;'>17 filters</h3>
-            <p style='margin-bottom: 40px; color: #000000'>have been implemented to that project.</p>
+            <h3 style='margin-top: 5px; color: #dd140e;'>{total} image(s)</h3>
+            <p style='margin-bottom: 40px; color: #000000'>have been edited in this project.</p>
             </div>
             </div>
             <div style='display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; width: 45vh; height: 25vh; border-radius: 10px; padding: 20px;'>
@@ -206,12 +213,12 @@ with col2:
             </div>
             <div style='display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; width: 45vh; height: 25vh; border-radius: 10px; padding: 20px;'>
             <div style='width: 80px; height: 8vh; border: 2px solid transparent; border-radius: 50%; display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; margin-right: 50px; margin-left: 10px;'>
-            <img src='https://cdn-icons-png.freepik.com/128/1159/1159633.png' alt='Icon' style='width: 60px; height: 60px;' />
+            <img src='https://cdn-icons-png.freepik.com/128/9752/9752076.png' alt='Icon' style='width: 60px; height: 60px;' />
             </div>
             <div style='text-align: left;'>
             <h4 style='margin-top: 15px; color: #000000'>Total:</h4>
-            <h3 style='margin-top: 5px; color: #dd140e;'>0 image(s)</h3>
-            <p style='margin-bottom: 40px; color: #000000'>have been edited in this project.</p>
+            <h3 style='margin-top: 5px; color: #dd140e;'>17 techniques</h3>
+            <p style='margin-bottom: 40px; color: #000000'>have been implemented to that project.</p>
             </div>
             </div>
             </div>
@@ -315,6 +322,10 @@ with col2:
                         # st.image(enhanced_image, caption="Saturation Adjusted Image", use_container_width=True)
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                         image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                        # ✅ Log to DB
+                        # Log the process to the database
+                        log_process(file_name, tool)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -376,6 +387,10 @@ with col2:
 
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                         image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                        # ✅ Log to DB
+                        # Log the process to the database
+                        log_process(file_name, tool)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -439,6 +454,10 @@ with col2:
 
                         st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                         image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                        # ✅ Log to DB
+                        # Log the process to the database
+                        log_process(file_name, tool)
 
                         
                         # Dosyayı indirilebilir hale getirme
@@ -526,7 +545,12 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-                        
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                                                       
+
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -588,6 +612,10 @@ with col2:
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
                             
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                                                     
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -648,6 +676,10 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
 
                         
                             # Dosyayı indirilebilir hale getirme
@@ -713,7 +745,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                            
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -797,7 +833,11 @@ with col2:
                             enhanced_image = SobelOperator(image, int(dx), int(dy), int(ksize))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)                     
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)                     
                         
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
@@ -860,7 +900,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-                        
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                                                    
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -920,7 +964,11 @@ with col2:
                             enhanced_image = PrewittOperator(image, int(dx), int(dy))
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
-                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)                           
+                            image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)                           
                             
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
@@ -982,7 +1030,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-                       
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                                                  
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -1043,7 +1095,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
- 
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                            
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -1103,7 +1159,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-                    
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                   
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             
                             # Dosyayı indirilebilir hale getirme
@@ -1188,7 +1248,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
-
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                            
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
                             custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
@@ -1254,6 +1318,11 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")                            
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
+                            
 
                             # Dosyayı indirilebilir hale getirme
                             # Input field for custom file name
@@ -1316,6 +1385,10 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
 
 
                             # Dosyayı indirilebilir hale getirme
@@ -1377,6 +1450,10 @@ with col2:
 
                             st.success(f"{tool} has been applied successfully. Check both of before-after images by slider!")
                             image_comparison(img1=image, img2=enhanced_image, label1="Original", label2=f"{tool}", width=1000)
+                            
+                            # ✅ Log to DB
+                            # Log the process to the database
+                            log_process(file_name, tool)
 
 
                             # Dosyayı indirilebilir hale getirme
@@ -1402,6 +1479,21 @@ with col2:
                                 use_container_width=True  # Adjust the button width to fit the container
                             )
 
+    if st.session_state.page == "Database":
+
+        st.markdown("<h3 style='text-align: center; margin-top : 50px'>Database</h3>", unsafe_allow_html=True)
+
+        st.markdown(
+            "<p style='font-size: 18px;'><br>The database contains the file processes as history.</p>",
+        unsafe_allow_html=True
+        )
+
+        # Display database content as a table
+        st.markdown("<h5 style='text-align: center; margin-top : 20px'>Process History Table</h5>", unsafe_allow_html=True)
+
+        logs = get_logs()
+        df_logs = pd.DataFrame(logs, columns=["Tarih", "Saat", "Dosya Adı", "Kullanılan Metot"])
+        st.dataframe(df_logs, use_container_width=True)
 
 
     if st.session_state.page == 'About':
