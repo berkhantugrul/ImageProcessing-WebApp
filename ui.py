@@ -3,6 +3,7 @@ from PIL import Image
 from pathlib import Path
 from streamlit_image_comparison import image_comparison
 from image_processes import *
+from feature_extraction import harris_response, compute_gradients, detect_harris_keypoints, compute_descriptors, draw_keypoints
 from wordcloud import WordCloud
 import pandas as pd
 from io import BytesIO
@@ -157,8 +158,11 @@ if st.sidebar.button('Color & Contrast Processing'):
 if st.sidebar.button('Blurring & Sharpening'):
     st.session_state.page = 'Blurring'
 
-if st.sidebar.button('Edge & Feature Detection'):
+if st.sidebar.button('Edge Detection'):
     st.session_state.page = 'Edge'
+
+if st.sidebar.button('Feature Detection'):
+    st.session_state.page = 'Feature'
 
 if st.sidebar.button('Thresholding & Slicing'):
     st.session_state.page = 'Thresholding'
@@ -239,7 +243,8 @@ with col2:
             "Threshold": 5,
             "Blurring": 6,
             "Sharpening": 5,
-            "EdgeDetection": 8        }
+            "EdgeDetection": 8,
+            "FeatureDetection": 7}
 
         # Alternatif: farklı sıklıklar
         # word_freq = {"Python": 10, "OpenCV": 8, "Streamlit": 7, "Histogram": 5, "Veri": 3}
@@ -773,7 +778,7 @@ with col2:
                                 use_container_width=True  # Adjust the button width to fit the container
                             )
                             
-    ################################## EDGE & FEATURE DETECTION #############################
+    ################################## EDGE DETECTION #############################
 
             
     if st.session_state.page == 'Edge':
@@ -1188,6 +1193,93 @@ with col2:
                                 help="Click to download the edited image",
                                 use_container_width=True  # Adjust the button width to fit the container
                             )
+
+    ##################################### FEATURE DETECTION ###############################
+
+    if st.session_state.page == 'Feature':
+        st.markdown("<h3 style='text-align: center; margin-top : 50px'>Feature Detection</h3>", unsafe_allow_html=True)
+
+        st.markdown("<p style='font-size: 18px;'>Upload an image to apply the tool.</p>", unsafe_allow_html=True)
+
+        placeholder = st.empty()
+
+        # File uploader for image uploading
+        uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"])
+
+        # Görsel yüklendiyse, altta gösterelim
+        if uploaded_file is not None:
+            # Görseli açalım
+            image = Image.open(uploaded_file).convert('L')
+            
+            placeholder.image(image, caption=f"Image dimensions: {image.size[0]} x {image.size[1]} (Width x Height)", width=1000)
+            # Görseli Streamlit'te gösterelim
+            # Add a slider for filter values
+
+            # Add a button to apply the selected tool
+            if st.button("Apply Tool", key="apply_button"):
+
+                # Check if an image is uploaded
+                if uploaded_file is None:
+                    st.warning("Please upload an image before applying the tool.")
+                    
+                else:
+                    file_type = uploaded_file.type.split('/')[1]
+                    file_name = f"uploaded_image.{file_type}"  # Create a file name for the uploaded image
+
+                    # Filtre fonksiyonu cagrilacak
+                    # Apply filter adjustment
+
+                    placeholder.empty()  # Clear the placeholder
+
+                    mag1, dir1 = compute_gradients(np.array(image))
+
+
+                    # # Anahtar noktaları bul
+                    # kp1 = detect_keypoints_topk(mag1, top_k=50)
+                    # kp2 = detect_keypoints_topk(mag2, top_k=50)
+
+                    # Harris köşe tepkisini hesapla
+                    R1 = harris_response(np.array(image))
+
+
+                    # Anahtar noktaları bul
+                    kp1 = detect_harris_keypoints(R1, threshold=0.001)
+
+                    # Descriptor çıkar
+                    desc1 = compute_descriptors(np.array(image), kp1)
+
+                    # Draw keypoints
+                    enhanced_image = draw_keypoints(np.array(image), kp1)
+
+                    st.success("Feature Detection has been applied successfully. Check both of before-after images by slider!")
+                    image_comparison(img1=image, img2=enhanced_image, label1="Original", label2="Feature Detection", width=1000)
+                    
+                    # ✅ Log to DB
+                    # Log the process to the database
+                    log_process(file_name, "Feature Detection")
+                    
+                    # Dosyayı indirilebilir hale getirme
+                    # Input field for custom file name
+                    custom_file_name = st.text_input("Enter file name (without extension):", value="edited_image")
+
+                    # Update the file name with the custom input
+                    file_name = f"{custom_file_name}.{file_type}"
+
+                    # Save the enhanced image to a BytesIO object
+                    buffer = BytesIO()
+                    enhanced_image.save(buffer, format=file_type.upper())
+                    buffer.seek(0)
+
+                    # Create a download button
+                    st.download_button(
+                        label="Download Edited Image",
+                        data=buffer,
+                        file_name=file_name,
+                        mime=f"image/{file_type}",
+                        key="download_button",
+                        help="Click to download the edited image",
+                        use_container_width=True  # Adjust the button width to fit the container
+                    )
 
 
     ################################### THRESHOLDING & SLICING #############################

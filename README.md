@@ -50,5 +50,4 @@ Licensed under the **MIT License**. See the `LICENSE` file for more information.
 ## 👨‍💻 Developer
 
 Berk Han Tugrul  
-📧 berkhantugrul@outlook.com 
-🔗 [LinkedIn](https://www.linkedin.com/berkhantugrul) | [GitHub](https://github.com/berkhantugrul)
+Said Arslan
